@@ -13,11 +13,9 @@
         public Direction ReverseDirection() => new(-ShiftRow, -ShiftColumn);
 
         public override bool Equals(object obj) => obj is Direction direction && ShiftRow == direction.ShiftRow && ShiftColumn == direction.ShiftColumn;
-
         public override int GetHashCode() => HashCode.Combine(ShiftRow, ShiftColumn);
 
         public static bool operator ==(Direction left, Direction right) => EqualityComparer<Direction>.Default.Equals(left, right);
-
         public static bool operator !=(Direction left, Direction right) => !(left == right);
     }
 }

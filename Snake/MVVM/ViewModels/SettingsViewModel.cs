@@ -4,12 +4,17 @@ using Snake.Services;
 
 namespace Snake.MVVM.ViewModels
 {
-	public partial class SettingsViewModel(INavigationService navigationService) : ViewModel
+	public partial class SettingsViewModel : ViewModel
 	{
 		[ObservableProperty]
-		private INavigationService _navigationService = navigationService;
+		private INavigationService _navigationService;
 
-		[RelayCommand]
+        public SettingsViewModel(INavigationService navigationService)
+        {
+			NavigationService = navigationService;
+        }
+
+        [RelayCommand]
 		private void NavigateToMenu() => NavigationService.NavigateTo<MenuViewModel>();
 	}
 }

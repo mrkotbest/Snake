@@ -6,9 +6,7 @@
 		private readonly Random _random = new();
 
 		public void Initialize()
-		{
-			AddFoodRandomly();
-		}
+			=> AddFoodRandomly();
 
 		public void AddFoodRandomly()
 		{
@@ -16,7 +14,7 @@
 			if (emptyPositions.Count != 0)
 			{
 				Position randomPosition = emptyPositions[_random.Next(emptyPositions.Count)];
-				_gameBoard.Cells[randomPosition.Row, randomPosition.Column] = CellValue.Food;
+				_gameBoard.Cells[randomPosition.Row, randomPosition.Column] = CellType.Food;
 			}
 		}
 	}

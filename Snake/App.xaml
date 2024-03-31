@@ -9,10 +9,11 @@
                 <materialDesign:BundledTheme BaseTheme="Dark" PrimaryColor="DeepPurple" SecondaryColor="Pink" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
                 
-                <!--<ResourceDictionary Source="ResourceDictionaries/MetroButton.xaml"/>-->
-                <ResourceDictionary Source="ResourceDictionaries/SolidColors.xaml"/>
-                <ResourceDictionary Source="ResourceDictionaries/Templates.xaml"/>
-                
+                <ResourceDictionary Source="Assets/ResourceDictionaries/SolidColors.xaml" />
+                <ResourceDictionary Source="Assets/ResourceDictionaries/Templates.xaml" />
+                <ResourceDictionary Source="Assets/ResourceDictionaries/ImageBrushes.xaml" />
+                <ResourceDictionary Source="Assets/ResourceDictionaries/Fonts.xaml" />
+
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

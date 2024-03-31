@@ -1,9 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
     <SolidColorBrush x:Key="BackgroundColor" Color="#211E2B" />
     <SolidColorBrush x:Key="CellBackgroundColor" Color="#312C40" />
     <SolidColorBrush x:Key="GridLineColor" Color="#4F4867" />
     <SolidColorBrush x:Key="TextColor" Color="#EBEBEB" />
     <SolidColorBrush x:Key="OverlayColor" Color="#7F000000" />
     <SolidColorBrush x:Key="LightOverlayColor" Color="#3F000000" />
+    
 </ResourceDictionary>

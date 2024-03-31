@@ -1,6 +1,6 @@
 ﻿namespace Snake.MVVM.Models
 {
-    public enum CellValue
+    public enum CellType
     {
         Empty,
         Snake,

@@ -17,25 +17,44 @@
     <None Remove="Assets\Food.png" />
     <None Remove="Assets\Head.png" />
     <None Remove="Assets\icon.ico" />
+    <None Remove="Assets\ResourceDictionaries\Fonts\Comfortaa.ttf" />
+    <None Remove="Assets\SnakeSkins\Purple\Body.png" />
+    <None Remove="Assets\SnakeSkins\Purple\DeadBody.png" />
+    <None Remove="Assets\SnakeSkins\Purple\DeadHead.png" />
+    <None Remove="Assets\SnakeSkins\Purple\DeadTail.png" />
+    <None Remove="Assets\SnakeSkins\Purple\DeadTurn.png" />
+    <None Remove="Assets\SnakeSkins\Purple\Empty.png" />
+    <None Remove="Assets\SnakeSkins\Purple\Food.png" />
+    <None Remove="Assets\SnakeSkins\Purple\Head.png" />
+    <None Remove="Assets\SnakeSkins\Purple\Tail.png" />
+    <None Remove="Assets\SnakeSkins\Purple\Turn.png" />
     <None Remove="Assets\Tail.png" />
+    <None Remove="Assets\ResourceDictionaries\mainBackground.jpg" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="MaterialDesignThemes" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\Body.png" />
-    <Resource Include="Assets\DeadBody.png" />
-    <Resource Include="Assets\DeadHead.png" />
-    <Resource Include="Assets\DeadTail.png" />
-    <Resource Include="Assets\Empty.png" />
-    <Resource Include="Assets\Food.png" />
-    <Resource Include="Assets\Head.png" />
     <Resource Include="Assets\icon.ico" />
-    <Resource Include="Assets\Tail.png" />
+    <Resource Include="Assets\ResourceDictionaries\Fonts\Comfortaa.ttf" />
+    <Resource Include="Assets\SnakeSkins\Purple\Body.png" />
+    <Resource Include="Assets\SnakeSkins\Purple\DeadBody.png" />
+    <Resource Include="Assets\SnakeSkins\Purple\DeadHead.png" />
+    <Resource Include="Assets\SnakeSkins\Purple\DeadTail.png" />
+    <Resource Include="Assets\SnakeSkins\Purple\DeadTurn.png" />
+    <Resource Include="Assets\SnakeSkins\Purple\Empty.png" />
+    <Resource Include="Assets\SnakeSkins\Purple\Food.png" />
+    <Resource Include="Assets\SnakeSkins\Purple\Head.png" />
+    <Resource Include="Assets\SnakeSkins\Purple\Tail.png" />
+    <Resource Include="Assets\SnakeSkins\Purple\Turn.png" />
+    <Resource Include="Assets\ResourceDictionaries\Images\mainBackground.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

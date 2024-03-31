@@ -1,75 +1,63 @@
-﻿namespace Snake.MVVM.Models
+﻿using Snake.Services;
+using System.Windows.Media.Imaging;
+
+namespace Snake.MVVM.Models
 {
-	public class Snake
+	public class Snake(GameBoard board)
 	{
-		private readonly GameBoard _gameBoard;
+		private readonly GameBoard _gameBoard = board;
 
 		public event Action OnEatFood;
 		public event Action OnGameOver;
 
-		public LinkedList<Position> SnakeBody { get; private set; } = new LinkedList<Position>();
-		public LinkedList<Direction> ClipboardDirections { get; private set; } = new LinkedList<Direction>();
-		public LinkedList<Direction> DirectionsHistory { get; private set; } = new LinkedList<Direction>();
+		public static LinkedList<SnakePart> SnakeBody { get; private set; } = new LinkedList<SnakePart>();
+		public static LinkedList<Direction> ClipboardDirections { get; private set; } = new LinkedList<Direction>();
 
-		public Direction CurrentDirection { get; private set; }
-
-		public Snake(GameBoard board)
-		{
-			_gameBoard = board;
-
-			SnakeBody = new LinkedList<Position>();
-			ClipboardDirections = new LinkedList<Direction>();
-
-			CurrentDirection = Direction.Right;
-
-			AddSnake();
-		}
-
-		private void AddSnake()
-		{
-			int middleRow = _gameBoard.Rows / 2;
-			for (int column = 1; column <= 3; column++)
-			{
-				Position position = new(middleRow, column);
-				SnakeBody.AddFirst(position);
-				_gameBoard.Cells[position.Row, position.Column] = CellValue.Snake;
-
-				DirectionsHistory.AddFirst(CurrentDirection);
-			}
-		}
+		public Direction CurrentDirection { get; private set; } = Direction.Right;
 
 		public void Initialize()
 		{
 			SnakeBody.Clear();
 			ClipboardDirections.Clear();
-			DirectionsHistory.Clear();
 			CurrentDirection = Direction.Right;
 			AddSnake();
 		}
-
 
 		public void Move()
 		{
 			UpdateDirection();
 
-			Position newPosition = HeadPosition().NextPosition(CurrentDirection);
-			CellValue cellValue = _gameBoard.CellValueAtNewPosition(newPosition);
+			Position newPosition = SnakeBody.First.Value.Position.NextPosition(CurrentDirection);
+			CellType cellValue = _gameBoard.CellValueAtNewPosition(newPosition);
 
 			switch (cellValue)
 			{
-				case CellValue.Outside:
-				case CellValue.Snake:
+				case CellType.Outside:
+				case CellType.Snake:
 					OnGameOver?.Invoke();
 					break;
-				case CellValue.Empty:
-					MoveSnake(newPosition);
+				case CellType.Empty:
+					Grow(newPosition);
+					RemoveTail();
 					break;
-				case CellValue.Food:
-					EatFood(newPosition);
+				case CellType.Food:
+					Grow(newPosition);
 					OnEatFood?.Invoke();
 					break;
 			}
 		}
+
+		public void ChangeDirection(Direction direction)
+		{
+			if (ClipboardDirections.Count < 2 &&
+				direction != LastClipboardDirection() &&
+				direction != LastClipboardDirection().ReverseDirection())
+			{
+				ClipboardDirections.AddLast(direction);
+			}
+		}
+		private Direction LastClipboardDirection()
+			=> ClipboardDirections.Count == 0 ? CurrentDirection : ClipboardDirections.Last.Value;
 
 		private void UpdateDirection()
 		{
@@ -80,62 +68,58 @@
 			}
 		}
 
-		private void MoveSnake(Position newPosition)
-		{
-			Grow(newPosition);
-			RemoveTail();
-		}
-
-		private void EatFood(Position newPosition)
-		{
-			Grow(newPosition);
-		}
-
 		private void Grow(Position position)
 		{
-			SnakeBody.AddFirst(position);
-			_gameBoard.Cells[position.Row, position.Column] = CellValue.Snake;
+			SnakePart snakePart = new() { Position = position, Direction = CurrentDirection };
+			SnakeBody.AddFirst(snakePart);
 
-			DirectionsHistory.AddFirst(CurrentDirection);
+			_gameBoard.Cells[position.Row, position.Column] = CellType.Snake;
 		}
 
 		private void RemoveTail()
 		{
-			Position position = TailPosition();
-			_gameBoard.Cells[position.Row, position.Column] = CellValue.Empty;
-			SnakeBody.RemoveLast();
+			Position tailPosition = SnakeBody.Last.Value.Position;
+			_gameBoard.Cells[tailPosition.Row, tailPosition.Column] = CellType.Empty;
 
-			DirectionsHistory.RemoveLast();
+			SnakeBody.RemoveLast();
 		}
 
-		public void ChangeDirection(Direction direction)
+		private void AddSnake()
 		{
-			if (ClipboardDirections.Count < 2 &&
-				direction != LastDirection() && 
-				direction != LastDirection().ReverseDirection())
+			Position position;
+			SnakePart snakePart;
+			int middleRow = _gameBoard.Rows / 2;
+
+			for (int column = 1; column <= 3; column++)
 			{
-				ClipboardDirections.AddLast(direction);
+				position = new Position(middleRow, column);
+				snakePart = new SnakePart { Position = position, Direction = CurrentDirection };
+
+				SnakeBody.AddFirst(snakePart);
+
+				_gameBoard.Cells[position.Row, position.Column] = CellType.Snake;
 			}
 		}
 
-		private Direction LastDirection()
+		public static SnakePartType GetSnakePartType(SnakePart currentSnakePart)
 		{
-			return ClipboardDirections.Count == 0 ? CurrentDirection : ClipboardDirections.Last.Value;
+			if (currentSnakePart.Position == SnakeBody.First.Value.Position)
+				return SnakePartType.Head;
+			else if (currentSnakePart.Position == SnakeBody.Last.Value.Position)
+				return SnakePartType.Tail;
+			else
+				return SnakePartType.Body;
 		}
 
-		public Direction LastDirectionFromDirectionHistory()
+		public static BitmapImage GetSnakeImageSource(SnakePartType partType, bool isTurning, bool isDead = false)
 		{
-			return DirectionsHistory.Last?.Previous?.Value ?? throw new InvalidOperationException("Last Snake direction not found.");
-		}
-
-		public Position HeadPosition()
-		{
-			return SnakeBody.First?.Value ?? throw new InvalidOperationException("First Snake position is empty.");
-		}
-
-		public Position TailPosition()
-		{
-			return SnakeBody.Last?.Value ?? throw new InvalidOperationException("Last Snake position is empty."); ;
+			return partType switch
+			{
+				SnakePartType.Head => isDead ? ImageService.DeadHead : ImageService.Head,
+				SnakePartType.Tail => isDead ? ImageService.DeadTail : ImageService.Tail,
+				SnakePartType.Body => isDead ? (isTurning ? ImageService.DeadTurn : ImageService.DeadBody) : (isTurning ? ImageService.Turn : ImageService.Body),
+				_ => null
+			};
 		}
 	}
 }

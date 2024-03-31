@@ -41,5 +41,12 @@ namespace Snake
 			((MainWindowViewModel)mainWindow.DataContext).NavigationService.NavigateTo<MenuViewModel>();
 			mainWindow.Show();
 		}
+
+		protected override void OnExit(ExitEventArgs e)
+		{
+			_serviceProvider.Dispose();
+
+			base.OnExit(e);
+		}
 	}
 }

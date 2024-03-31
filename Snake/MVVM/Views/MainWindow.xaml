@@ -8,12 +8,11 @@
         d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel}"
         mc:Ignorable="d"
         Title="Snake"
-        Height="500" Width="800"
-        MinHeight="300" MinWidth="300"
+        Height="800" Width="1200"
         Background="{StaticResource BackgroundColor}"
-        FontFamily="{StaticResource MaterialDesignFont}"
-        Style="{StaticResource MaterialDesignWindow}"
-        WindowState="Maximized"
+        ResizeMode="CanResizeWithGrip"
+        WindowState="Normal"
+        WindowStartupLocation="CenterScreen"
         Icon="pack://application:,,,/Assets/icon.ico">
 
     <Grid>
