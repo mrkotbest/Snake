@@ -1,0 +1,56 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="WKeyStyle" TargetType="Border">
+        <Setter Property="Background">
+            <Setter.Value>
+                <ImageBrush ImageSource="../../Assets/Images/wKey.png" />
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PressedKey, UpdateSourceTrigger=PropertyChanged}" Value="{x:Static Key.W}">
+                <Setter Property="BorderThickness" Value="4" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="AKeyStyle" TargetType="Border">
+        <Setter Property="Background">
+            <Setter.Value>
+                <ImageBrush ImageSource="../../Assets/Images/aKey.png" />
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PressedKey, UpdateSourceTrigger=PropertyChanged}" Value="{x:Static Key.A}">
+                <Setter Property="BorderThickness" Value="4" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="SKeyStyle" TargetType="Border">
+        <Setter Property="Background">
+            <Setter.Value>
+                <ImageBrush ImageSource="../../Assets/Images/sKey.png" />
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PressedKey, UpdateSourceTrigger=PropertyChanged}" Value="{x:Static Key.S}">
+                <Setter Property="BorderThickness" Value="4" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="DKeyStyle" TargetType="Border">
+        <Setter Property="Background">
+            <Setter.Value>
+                <ImageBrush ImageSource="../../Assets/Images/dKey.png" />
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PressedKey, UpdateSourceTrigger=PropertyChanged}" Value="{x:Static Key.D}">
+                <Setter Property="BorderThickness" Value="4" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>

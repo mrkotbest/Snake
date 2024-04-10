@@ -4,129 +4,135 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewmodels="clr-namespace:Snake.MVVM.ViewModels"
+             xmlns:views="clr-namespace:Snake.MVVM.Views"
              d:DataContext="{d:DesignInstance Type=viewmodels:GameViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="800" d:DesignWidth="1200"
+             d:DesignHeight="850" d:DesignWidth="1200"
              Background="{StaticResource BackgroundImageBrush}"
              FontFamily="{StaticResource CustomComfortaaFont}"
              Foreground="{StaticResource TextColor}">
+    
+    <Grid>
 
-    <DockPanel>
-        <Grid DockPanel.Dock="Left">
-            <Button Height="25"
-                    Width="75"
-                    Margin="20 20 0 0"
-                    VerticalAlignment="Top"
-                    HorizontalAlignment="Left"
-                    Content="Menu"
-                    Command="{Binding NavigateToMenuCommand}">
-            </Button>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+
+            <Border
+                Width="{Binding Path=ActualWidth, ElementName=GridInfo}"
+                Height="{Binding Path=ActualHeight, ElementName=GridInfo}"
+                Margin="80 0 0 0">
+
+                <Border.Effect>
+                    <DropShadowEffect
+                        Color="Black"
+                        Direction="0"
+                        ShadowDepth="0"
+                        Opacity="0.8"
+                        BlurRadius="15" />
+                </Border.Effect>
+
+                <StackPanel
+                    Name="GridInfo"
+                    Orientation="Vertical"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
+
+                    <Label
+                        Content="BEST SCORE"
+                        Style="{StaticResource Label}"/>
+                    <TextBlock
+                        Text="{Binding BestScore, FallbackValue=0}"
+                        Style="{StaticResource TextBox}"
+                        Margin="0 0 0 30" />
+
+                    <Label
+                        Content="SCORE"
+                        Style="{StaticResource Label}"/>
+                    <TextBlock
+                        Text="{Binding Score, FallbackValue=0}"
+                        Style="{StaticResource TextBox}" 
+                        Margin="0 0 0 30" />
+
+                    <Label
+                        Content="SPEED"
+                        Style="{StaticResource Label}" />
+                    <TextBlock
+                        Text="{Binding SpeedStr, FallbackValue=1x}"
+                        Style="{StaticResource TextBox}" />
+
+                    <views:KeysView Margin="0 50 0 0" />
+
+                </StackPanel>
+
+            </Border>
+
         </Grid>
 
-        <Viewbox DockPanel.Dock="Left">
-            <Grid Margin="20">
-                <Border Name="GridBorder"
-                        BorderBrush="{StaticResource GridLineColor}"
-                        BorderThickness="1.5"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        RenderOptions.EdgeMode="Aliased"
-                        CornerRadius="3">
-                    <Border.Effect>
-                        <DropShadowEffect Color="Black"
-                                          Direction="0"
-                                          ShadowDepth="0"
-                                          Opacity="0.5"
-                                          BlurRadius="25"/>
-                    </Border.Effect>
-                    <ItemsControl ItemsSource="{Binding GridImages}"
-                                  Background="{StaticResource CellBackgroundColor}"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  SnapsToDevicePixels="True"
-                                  RenderOptions.BitmapScalingMode="HighQuality">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <UniformGrid Rows="{Binding Rows}"
-                                             Columns="{Binding Columns}"
-                                             Width="700"
-                                             Height="700" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </Border>
+        <Grid Grid.Column="1">
 
-                <Border Width="{Binding Path=ActualWidth, ElementName=GridBorder}"
-                        Height="{Binding Path=ActualHeight, ElementName=GridBorder}"
-                        Margin="{Binding Path=Margin, ElementName=GridBorder}"
-                        Background="{StaticResource OverlayColor}"
-                        RenderOptions.EdgeMode="Aliased"
-                        CornerRadius="3"
-                        Visibility="{Binding OverlayVisibility}">
-                    <TextBlock Text="{Binding OverlayText}"
-                               Visibility="{Binding OverlayVisibility}"
-                               FontSize="26"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               TextWrapping="Wrap" />
-                </Border>
-            </Grid>
-        </Viewbox>
+            <Border
+                Name="GridBorder"
+                BorderBrush="{StaticResource GridLineColor}"
+                BorderThickness="1.5"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                RenderOptions.EdgeMode="Aliased"
+                CornerRadius="3">
 
-        <Viewbox DockPanel.Dock="Right">
-            <Grid Margin="20">
-                <Border Width="{Binding Path=ActualWidth, ElementName=GridInfo}"
-                    Height="{Binding Path=ActualHeight, ElementName=GridInfo}">
-                    <Border.Effect>
-                        <DropShadowEffect Color="Black"
-                                      Direction="0"
-                                      ShadowDepth="0"
-                                      Opacity="0.5"
-                                      BlurRadius="15" />
-                    </Border.Effect>
-                    <StackPanel Name="GridInfo" 
-                            Orientation="Vertical"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Center">
-                        <Label Content="BEST SCORE"
-                           FontSize="20"
-                           Foreground="GhostWhite"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
-                        <TextBlock Text="{Binding BestScore, FallbackValue=0}"
-                               FontSize="30"
-                               Margin="0 0 0 30"
-                               FontWeight="Heavy"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center" />
+                <Border.Effect>
+                    <DropShadowEffect
+                        Color="Black"
+                        Direction="0"
+                        ShadowDepth="0"
+                        Opacity="0.5"
+                        BlurRadius="25"/>
+                </Border.Effect>
 
-                        <Label Content="SCORE"
-                           FontSize="20"
-                           Foreground="GhostWhite"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
-                        <TextBlock Text="{Binding Score, FallbackValue=0}"
-                               FontSize="30"
-                               FontWeight="Heavy"
-                               Margin="0 0 0 30"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center" />
+                <ItemsControl
+                    ItemsSource="{Binding GridImages}"
+                    Background="{StaticResource CellBackgroundColor}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    SnapsToDevicePixels="True"
+                    RenderOptions.BitmapScalingMode="HighQuality">
 
-                        <Label Content="SPEED"
-                           FontSize="20"
-                           Foreground="GhostWhite"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding SpeedStr, FallbackValue=1x}"
-                               FontSize="30"
-                               FontWeight="Heavy"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center" />
-                    </StackPanel>
-                </Border>
-            </Grid>
-        </Viewbox>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid
+                                Rows="{Binding Rows}" Columns="{Binding Columns}"
+                                Width="750" Height="750" />
+                        </ItemsPanelTemplate>
 
-    </DockPanel>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </Border>
+
+            <Border
+                Width="{Binding Path=ActualWidth, ElementName=GridBorder}"
+                Height="{Binding Path=ActualHeight, ElementName=GridBorder}"
+                Margin="{Binding Path=Margin, ElementName=GridBorder}"
+                Background="{StaticResource OverlayColor}"
+                RenderOptions.EdgeMode="Aliased"
+                CornerRadius="3"
+                Visibility="{Binding OverlayVisibility}">
+
+                <TextBlock
+                    Text="{Binding OverlayText}"
+                    Visibility="{Binding OverlayVisibility}"
+                    FontSize="26"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    TextWrapping="Wrap" />
+
+            </Border>
+
+        </Grid>
+
+    </Grid>
 
 </UserControl>

@@ -3,47 +3,46 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Snake.MVVM.Views"
              xmlns:viewmodels="clr-namespace:Snake.MVVM.ViewModels"
-             d:DataContext="{d:DesignInstance Type=viewmodels:MenuViewModel}"
              mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=viewmodels:MenuViewModel}"
              d:DesignHeight="450" d:DesignWidth="800"
-             FontFamily="{StaticResource MaterialDesignFont}">
+             FontFamily="{StaticResource CustomComfortaaFont}">
 
-    <Grid HorizontalAlignment="Center"
-          VerticalAlignment="Center">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0"
-                       Text="The Snake"
-                       Foreground="{StaticResource TextColor}"
-                       FontSize="50"
-                       Margin="0 20 0 0"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"/>
+        <TextBlock
+            Grid.Row="0"
+            Text="The Snake"
+            Foreground="{StaticResource TextColor}"
+            FontSize="50"
+            Margin="0 20 0 0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center" />
 
-            <StackPanel Grid.Row="1">
-                <Button Height="30"
-                        Width="100"
-                        Margin="0 20 0 10"
-                        Content="PLAY"
-                        Command="{Binding NavigateGameCommand}"/>
-                <Button Height="30"
-                        Width="100"
-                        Margin="0 0 0 10"
-                        Content="OPTIONS"
-                        Command="{Binding NavigateSettingsCommand}"/>
-                <Button Height="30"
-                        Width="100"
-                        Margin="0 0 0 10"
-                        Content="QUIT"
-                        Command="{Binding QuitCommand}"/>
-            </StackPanel>
-        </Grid>
+        <StackPanel Grid.Row="1">
+            <Button
+                    Height="30" Width="100"
+                    Margin="0 20 0 10"
+                    Content="PLAY"
+                    Command="{Binding NavigateGameCommand}" />
+            <Button
+                    Height="30" Width="100"
+                    Margin="0 0 0 10"
+                    Content="OPTIONS"
+                    Command="{Binding NavigateSettingsCommand}" />
+            <Button
+                    Height="30" Width="100"
+                    Margin="0 0 0 10"
+                    Content="QUIT"
+                    Command="{Binding QuitCommand}" />
+        </StackPanel>
+
     </Grid>
 
 </UserControl>

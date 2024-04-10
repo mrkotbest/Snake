@@ -12,14 +12,17 @@
 
     <Grid>
 
-        <Button Grid.Column="0"
-                Height="30"
-                Width="75"
-                Margin="10"
-                VerticalAlignment="Top"
-                HorizontalAlignment="Center"
-                Content="Back"
-                Command="{Binding NavigateToMenuCommand}"/>
+        <Button
+            Grid.Column="0"
+            Height="Auto" Width="Auto"
+            Margin="10"
+            FontSize="50"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            VerticalContentAlignment="Center"
+            HorizontalContentAlignment="Center"
+            Content="Back"
+            Command="{Binding NavigateToMenuCommand}"/>
 
     </Grid>
     

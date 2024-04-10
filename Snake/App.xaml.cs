@@ -24,7 +24,6 @@ namespace Snake
 			services.AddSingleton<GameViewModel>();
 			services.AddSingleton<SettingsViewModel>();
 
-			services.AddSingleton<ImageService>();
 			services.AddSingleton<INavigationService, NavigationService>();
 			services.AddSingleton<Func<Type, ViewModel>>(provider => viewModelType => (ViewModel)provider.GetRequiredService(viewModelType));
 

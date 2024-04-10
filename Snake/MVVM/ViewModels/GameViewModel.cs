@@ -3,11 +3,16 @@ using CommunityToolkit.Mvvm.Input;
 using Snake.MVVM.Models;
 using Snake.MVVM.Views;
 using Snake.Services;
+using System.Reflection.Metadata.Ecma335;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using Image = System.Windows.Controls.Image;
+using Snake = Snake.MVVM.Models.Snake;
 
 namespace Snake.MVVM.ViewModels;
 
@@ -15,9 +20,9 @@ public partial class GameViewModel : ViewModel
 {
 	private static readonly Dictionary<CellType, BitmapImage> _cellValueToImage = new()
 	{
-		{ CellType.Empty, ImageService.Empty },
-		{ CellType.Snake, ImageService.Body },
-		{ CellType.Food, ImageService.Food },
+		{ CellType.Empty, ImageService.SnakeImageSource["Empty"] },
+		{ CellType.Snake, ImageService.SnakeImageSource["Body"] },
+		{ CellType.Food, ImageService.SnakeImageSource["Food"] },
 	};
 	private static readonly Dictionary<Direction, int> _directionToRotation = new()
 	{
@@ -26,17 +31,10 @@ public partial class GameViewModel : ViewModel
 		{ Direction.Right, 90 },
 		{ Direction.Down, 180 }
 	};
-	private static readonly Dictionary<(Direction, Direction), SnakeTurnType> _turnTypeByDirection = new()
-	{
-		{(Direction.Up, Direction.Right), SnakeTurnType.Clockwise},
-		{(Direction.Right, Direction.Down), SnakeTurnType.Clockwise},
-		{(Direction.Down, Direction.Left), SnakeTurnType.Clockwise},
-		{(Direction.Left, Direction.Up), SnakeTurnType.Clockwise}
-	};
 
 	private readonly GameState _game;
 
-	private readonly double _scoreMultiplier = 1;
+	private readonly double _scoreMultiplier = 2;
 	private double _speedMultiplier = 1;
 	private int _speed = 100;
 	private bool _isGameOver;
@@ -48,6 +46,8 @@ public partial class GameViewModel : ViewModel
 	private int _score = 0;
 	[ObservableProperty]
 	private string _speedStr = "1x";
+	[ObservableProperty]
+	private Key _pressedKey;
 
 	[ObservableProperty]
 	private INavigationService _navigationService;
@@ -64,6 +64,10 @@ public partial class GameViewModel : ViewModel
 	[RelayCommand]
 	private void NavigateToMenu()
 		=> NavigationService.NavigateTo<MenuViewModel>();
+
+	[RelayCommand]
+	private void KeyPressed(Key key)
+		=> PressedKey = key;
 
 	public GameViewModel(INavigationService navigationService, MainWindow main)
 	{
@@ -109,9 +113,9 @@ public partial class GameViewModel : ViewModel
 		{
 			for (int column = 0; column < Columns; column++)
 			{
-				Image image = new()
+				var image = new Image()
 				{
-					Source = ImageService.Empty,
+					Source = ImageService.SnakeImageSource["Empty"],
 					RenderTransformOrigin = new Point(0.5, 0.5)
 				};
 				gridImages.Add(image);
@@ -122,7 +126,7 @@ public partial class GameViewModel : ViewModel
 	private async Task StartNewGame()
 	{
 		ReInitialize();
-		Draw();
+		await Draw();
 		await ShowCountDown();
 		OverlayVisibility = Visibility.Hidden;
 		await GameLoop();
@@ -137,99 +141,79 @@ public partial class GameViewModel : ViewModel
 		_isGameOver = false;
 		Score = 0;
 		SpeedStr = "1x";
+		PressedKey = Key.None;
 	}
 
-	private void Draw()
+	private async Task Draw()
 	{
 		DrawGrid();
-		DrawSnake(_game.GetSnakeBody());
+		await DrawAliveOrDeadSnake(_game.GetSnakeBody());
 	}
 
 	private void DrawGrid()
 	{
-		Image image;
 		CellType cell;
+		Image image;
 
 		for (int row = 0; row < Rows; row++)
 		{
 			for (int column = 0; column < Columns; column++)
 			{
 				cell = _game.GetCurrentCell(row, column);
-				// "row * Columns + column" это формула для преобразования двумерного индекса в одномерный.
-				image = GridImages[row * Columns + column];
+				
+				image = GridImages[row * Columns + column]; // row * Columns + column - это формула для преобразования двумерного индекса в одномерный.
 				image.Source = _cellValueToImage[cell];
 				image.RenderTransform = Transform.Identity;
 			}
 		}
 	}
 
-	private static SnakeTurnType GetTurnType(Direction currentDirection, Direction previousDirection)
+	private async Task DrawAliveOrDeadSnake(LinkedList<SnakePart> snake, bool isDead = false)
 	{
-		// Проверяем, является ли поворот по часовой стрелке или против
-		if (_turnTypeByDirection.TryGetValue((previousDirection, currentDirection), out SnakeTurnType turnType))
-			return turnType;
-		return SnakeTurnType.CounterClockwise;
-	}
-
-	private void DrawSnake(LinkedList<SnakePart> snake, bool isDead = false)
-	{
-		Direction previousDirection = snake.Last?.Previous.Value.Direction ?? throw new InvalidOperationException("Snake must have at least two parts.");
-		SnakePartType snakePartType;
-		BitmapImage snakeImageSource;
-		bool isTurning;
-
-		foreach (SnakePart currentSnakePart in snake)
+		SnakePart previousPart = snake.Last?.Previous?.Value;
+		foreach (SnakePart currentPart in snake)
 		{
-			snakePartType = Models.Snake.GetSnakePartType(currentSnakePart);
-			isTurning = currentSnakePart.Direction != previousDirection;
-
-			snakeImageSource = Models.Snake.GetSnakeImageSource(snakePartType, isTurning, isDead);
-
-			DrawSnakePart(currentSnakePart, previousDirection, snakeImageSource);
-
-			previousDirection = currentSnakePart.Direction;
-		}
-	}
-	private async Task DrawDeadSnake(LinkedList<SnakePart> snake)
-	{
-		Direction previousDirection = snake.Last?.Previous.Value.Direction ?? throw new InvalidOperationException("Snake must have at least two parts.");
-		SnakePartType snakePartType;
-		Image image;
-		bool isTurning;
-
-		foreach (SnakePart currentDeadSnakePart in snake)
-		{
-			snakePartType = Models.Snake.GetSnakePartType(currentDeadSnakePart);
-			isTurning = currentDeadSnakePart.Direction != previousDirection;
-
-			image = GridImages[currentDeadSnakePart.Position.Row * Columns + currentDeadSnakePart.Position.Column];
-
-			image.Source = Models.Snake.GetSnakeImageSource(snakePartType, isTurning, isDead: true);
-			await Task.Delay(50);
-
-			previousDirection = currentDeadSnakePart.Direction;
+			DrawAliveOrDeadSnakePart(currentPart, previousPart, isDead);
+			previousPart = currentPart;
+			if (isDead)
+			{
+				await Task.Delay(60);
+			}
 		}
 	}
 
-	private void DrawSnakePart(SnakePart currentSnakePart, Direction previousDirection, BitmapImage snakePartImageSource)
+	private void DrawAliveOrDeadSnakePart(SnakePart currentPart, SnakePart previousPart, bool isDead)
 	{
-		Position currentPosition = currentSnakePart.Position;
-		Direction currentDirection = currentSnakePart.Direction;
+		Position position = currentPart.Position;
+		Direction direction = currentPart.Direction;
+		bool isTurn = currentPart.IsTurn;
 
-		int rotation = GetRotation(snakePartImageSource, currentDirection, previousDirection);
+		SnakeTurnType turnType = Models.Snake.GetTurnType(direction, previousPart.Direction);
+		SnakePartType partType = Models.Snake.GetSnakePartType(position);
+		BitmapImage source = Models.Snake.GetSnakeImageSource(partType, isTurn, isDead);
 
-		SnakeTurnType turnType = GetTurnType(currentDirection, previousDirection);
+		int rotation = GetRotation(direction, turnType, isTurn);
 
-		if (turnType == SnakeTurnType.Clockwise && snakePartImageSource == ImageService.Turn)
-			rotation -= 270;
+		if (partType == SnakePartType.Tail)
+			rotation = _directionToRotation[previousPart.Direction];
 
-		Image image = GridImages[currentPosition.Row * Columns + currentPosition.Column];
-		image.Source = snakePartImageSource;
+		SetSnakePartImageSource(position, source, rotation);
+	}
+
+	private static int GetRotation(Direction direction, SnakeTurnType turnType, bool isTurn)
+	{
+		int rotation = _directionToRotation[direction];
+		if (isTurn && turnType == SnakeTurnType.Clockwise)
+			return rotation -= 270;
+		return rotation;
+	}
+
+	private void SetSnakePartImageSource(Position position, BitmapImage source, int rotation)
+	{
+		Image image = GridImages[position.Row * Columns + position.Column];
+		image.Source = source;
 		image.RenderTransform = new RotateTransform(rotation);
 	}
-
-	private static int GetRotation(BitmapImage snakeImageSource, Direction currentDirection, Direction previousDirection)
-		=> snakeImageSource == ImageService.Tail ? _directionToRotation[previousDirection] : _directionToRotation[currentDirection];
 
 	private async Task ShowCountDown()
 	{
@@ -245,14 +229,14 @@ public partial class GameViewModel : ViewModel
 		while (!_isGameOver)
 		{
 			_game.Move();
-			Draw();
+			await Draw();
 			await Task.Delay(_speed);
 		}
 	}
 
 	private async Task ShowGameOver()
 	{
-		await DrawDeadSnake(_game.GetSnakeBody());
+		await DrawAliveOrDeadSnake(_game.GetSnakeBody(), true);
 		await Task.Delay(1_000);
 		OverlayVisibility = Visibility.Visible;
 		OverlayText = "Press any key to start";
@@ -292,5 +276,6 @@ public partial class GameViewModel : ViewModel
 			default:
 				break;
 		}
+		PressedKey = e.Key;
 	}
 }

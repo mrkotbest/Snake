@@ -5,13 +5,21 @@ namespace Snake.MVVM.Models
 {
 	public class Snake(GameBoard board)
 	{
-		private readonly GameBoard _gameBoard = board;
+		private static readonly Dictionary<(Direction, Direction), SnakeTurnType> _turnTypeByDirection = new()
+		{
+			{(Direction.Up, Direction.Right), SnakeTurnType.Clockwise},
+			{(Direction.Right, Direction.Down), SnakeTurnType.Clockwise},
+			{(Direction.Down, Direction.Left), SnakeTurnType.Clockwise},
+			{(Direction.Left, Direction.Up), SnakeTurnType.Clockwise}
+		};
 
-		public event Action OnEatFood;
-		public event Action OnGameOver;
+		private readonly GameBoard _gameBoard = board;
 
 		public static LinkedList<SnakePart> SnakeBody { get; private set; } = new LinkedList<SnakePart>();
 		public static LinkedList<Direction> ClipboardDirections { get; private set; } = new LinkedList<Direction>();
+
+		public event Action OnEatFood;
+		public event Action OnGameOver;
 
 		public Direction CurrentDirection { get; private set; } = Direction.Right;
 
@@ -70,10 +78,18 @@ namespace Snake.MVVM.Models
 
 		private void Grow(Position position)
 		{
-			SnakePart snakePart = new() { Position = position, Direction = CurrentDirection };
+			UpdateTurnStatus();
+			SnakePart snakePart = new() { Position = position, Direction = CurrentDirection, IsTurn = false };
 			SnakeBody.AddFirst(snakePart);
 
 			_gameBoard.Cells[position.Row, position.Column] = CellType.Snake;
+		}
+		private void UpdateTurnStatus()
+		{
+			if (SnakeBody.First?.Value.Direction != CurrentDirection && SnakeBody.First != null)
+			{
+				SnakeBody.First.Value.IsTurn = true;
+			}
 		}
 
 		private void RemoveTail()
@@ -93,7 +109,7 @@ namespace Snake.MVVM.Models
 			for (int column = 1; column <= 3; column++)
 			{
 				position = new Position(middleRow, column);
-				snakePart = new SnakePart { Position = position, Direction = CurrentDirection };
+				snakePart = new SnakePart { Position = position, Direction = CurrentDirection, IsTurn = false };
 
 				SnakeBody.AddFirst(snakePart);
 
@@ -101,23 +117,31 @@ namespace Snake.MVVM.Models
 			}
 		}
 
-		public static SnakePartType GetSnakePartType(SnakePart currentSnakePart)
+		public static SnakeTurnType GetTurnType(Direction currentDirection, Direction previousDirection)
 		{
-			if (currentSnakePart.Position == SnakeBody.First.Value.Position)
+			if (_turnTypeByDirection.TryGetValue((previousDirection, currentDirection), out SnakeTurnType turnType))
+				return turnType;
+			return SnakeTurnType.CounterClockwise;
+		}
+
+		public static SnakePartType GetSnakePartType(Position position)
+		{
+			if (position == SnakeBody.First.Value.Position)
 				return SnakePartType.Head;
-			else if (currentSnakePart.Position == SnakeBody.Last.Value.Position)
+			else if (position == SnakeBody.Last.Value.Position)
 				return SnakePartType.Tail;
 			else
 				return SnakePartType.Body;
 		}
 
-		public static BitmapImage GetSnakeImageSource(SnakePartType partType, bool isTurning, bool isDead = false)
+		public static BitmapImage GetSnakeImageSource(SnakePartType partType, bool isTurn, bool isDead = false)
 		{
 			return partType switch
 			{
-				SnakePartType.Head => isDead ? ImageService.DeadHead : ImageService.Head,
-				SnakePartType.Tail => isDead ? ImageService.DeadTail : ImageService.Tail,
-				SnakePartType.Body => isDead ? (isTurning ? ImageService.DeadTurn : ImageService.DeadBody) : (isTurning ? ImageService.Turn : ImageService.Body),
+				SnakePartType.Head => isDead ? ImageService.SnakeImageSource["DeadHead"] : ImageService.SnakeImageSource["Head"],
+				SnakePartType.Tail => isDead ? ImageService.SnakeImageSource["DeadTail"] : ImageService.SnakeImageSource["Tail"],
+				SnakePartType.Body => isDead ? (isTurn ? ImageService.SnakeImageSource["DeadTurn"] : ImageService.SnakeImageSource["DeadBody"]) :
+											   (isTurn ? ImageService.SnakeImageSource["Turn"] : ImageService.SnakeImageSource["Body"]),
 				_ => null
 			};
 		}

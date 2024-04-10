@@ -1,20 +1,21 @@
 ﻿<Application x:Class="Snake.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                
-                <materialDesign:BundledTheme BaseTheme="Dark" PrimaryColor="DeepPurple" SecondaryColor="Pink" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
-                
+
                 <ResourceDictionary Source="Assets/ResourceDictionaries/SolidColors.xaml" />
                 <ResourceDictionary Source="Assets/ResourceDictionaries/Templates.xaml" />
                 <ResourceDictionary Source="Assets/ResourceDictionaries/ImageBrushes.xaml" />
                 <ResourceDictionary Source="Assets/ResourceDictionaries/Fonts.xaml" />
+                <ResourceDictionary Source="Assets/ResourceDictionaries/Label.xaml" />
+                <ResourceDictionary Source="Assets/ResourceDictionaries/TextBlock.xaml" />
+                <ResourceDictionary Source="Assets/ResourceDictionaries/WASDKeyStyle.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
+    
 </Application>
