@@ -1,12 +1,12 @@
 ﻿namespace Snake.MVVM.Models
 {
-    public class GameState
+	public class GameState
     {
 		public GameBoard GameBoard { get; }
 		public Snake Snake { get; }
 		public Food Food { get; }
 
-		public GameState(int rows, int columns)
+		public GameState(byte rows, byte columns)
         {
 			GameBoard = new GameBoard(rows, columns);
 			Snake = new Snake(GameBoard);
@@ -25,9 +25,6 @@
 
 		public void Move()
 			=> Snake.Move();
-
-		public LinkedList<SnakePart> GetSnakeBody()
-			=> Snake.SnakeBody;
 
 		public void ChangeDirection(Direction direction)
 			=> Snake.ChangeDirection(direction);

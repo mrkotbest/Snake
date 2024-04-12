@@ -10,11 +10,10 @@ namespace Snake.MVVM.ViewModels
 		private INavigationService _navigationService;
 
         public SettingsViewModel(INavigationService navigationService)
-        {
-			NavigationService = navigationService;
-        }
+			=> NavigationService = navigationService;
 
         [RelayCommand]
-		private void NavigateToMenu() => NavigationService.NavigateTo<MenuViewModel>();
+		private void NavigateToMenu()
+			=> NavigationService.NavigateTo<MenuViewModel>();
 	}
 }

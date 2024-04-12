@@ -1,6 +1,6 @@
 ﻿namespace Snake.MVVM.Models
 {
-    public enum SnakeTurnType
+	public enum SnakeTurnType
     {
         Clockwise,
         CounterClockwise

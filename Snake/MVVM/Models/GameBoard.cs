@@ -1,16 +1,16 @@
 ﻿namespace Snake.MVVM.Models
 {
-	public class GameBoard(int rows, int columns)
+	public class GameBoard(byte rows, byte columns)
 	{
-		public int Rows { get; } = rows;
-		public int Columns { get; } = columns;
+		public byte Rows { get; } = rows;
+		public byte Columns { get; } = columns;
 		public CellType[,] Cells { get; } = new CellType[rows, columns];
 
 		public void Initialize()
 		{
-			for (int row = 0; row < Rows; row++)
+			for (byte row = 0; row < Rows; row++)
 			{
-				for (int column = 0; column < Columns; column++)
+				for (byte column = 0; column < Columns; column++)
 				{
 					Cells[row, column] = CellType.Empty;
 				}
@@ -31,10 +31,13 @@
 			return emptyCellPositions;
 		}
 
-		public CellType CellValueAtNewPosition(Position newPosition)
-			=> IsCellOutside(newPosition) ? CellType.Outside : Cells[newPosition.Row, newPosition.Column];
+		public CellType CellTypeAtNewPosition(Position newPosition)
+			=> IsCellOutside(newPosition) ? CellType.Outside : IsCellSnake(newPosition) ? CellType.Empty : Cells[newPosition.Row, newPosition.Column];
 
 		private bool IsCellOutside(Position position)
 			=> position.Row < 0 || position.Row >= Rows || position.Column < 0 || position.Column >= Columns;
+
+		private static bool IsCellSnake(Position position)
+			=> position.Equals(Snake.SnakeBody.Last());
 	}
 }

@@ -10,12 +10,15 @@ namespace Snake.MVVM.ViewModels
 		private INavigationService _navigationService = navigationService;
 
 		[RelayCommand]
-		private void NavigateGame() => NavigationService.NavigateTo<GameViewModel>();
+		private void NavigateGame()
+			=> NavigationService.NavigateTo<GameViewModel>();
 
 		[RelayCommand]
-		private void NavigateSettings() => NavigationService.NavigateTo<SettingsViewModel>();
+		private void NavigateSettings()
+			=> NavigationService.NavigateTo<SettingsViewModel>();
 
 		[RelayCommand]
-		private static void Quit() => System.Windows.Application.Current.Shutdown();
+		private static void Quit()
+			=> System.Windows.Application.Current.Shutdown();
 	}
 }

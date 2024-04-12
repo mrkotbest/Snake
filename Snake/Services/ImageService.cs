@@ -4,9 +4,9 @@ namespace Snake.Services
 {
 	public static class ImageService
 	{
-		private static readonly string[] ImageNames = [ "Empty", "Food", "Head", "Body", "Tail", "DeadHead", "DeadBody", "DeadTail", "Turn", "DeadTurn" ];
+		private static readonly string[] ImageNames = [ "Empty", "Food", "Head", "Body", "Tail", "Turn", "DeadHead", "DeadBody", "DeadTail", "DeadTurn" ];
 
-		public static readonly Dictionary<string, BitmapImage> SnakeImageSource = [];
+		public static readonly Dictionary<string, BitmapImage> SnakeImageSources = [];
 
 		static ImageService()
 		{
@@ -16,9 +16,9 @@ namespace Snake.Services
 		private static Dictionary<string, BitmapImage> LoadSkin(string skinType)
 		{
 			foreach (string name in ImageNames)
-				SnakeImageSource[name] = LoadImage(skinType, $"{name}.png");
+				SnakeImageSources[name] = LoadImage(skinType, $"{name}.png");
 
-			return SnakeImageSource;
+			return SnakeImageSources;
 		}
 
 		private static BitmapImage LoadImage(string foldername, string filename)
