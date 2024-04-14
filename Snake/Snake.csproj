@@ -55,12 +55,12 @@
     <Resource Include="Assets\Skins\Purple\DeadTurn.png" />
     <Resource Include="Assets\Skins\Purple\Empty.png" />
     <Resource Include="Assets\Skins\Purple\Food.png" />
-    <Resource Include="Assets\Skins\Purple\Head.png" />
-    <Resource Include="Assets\Skins\Purple\Tail.png" />
-    <Resource Include="Assets\Skins\Purple\Turn.png" />
     <Resource Include="Assets\Images\mainBackground.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\Skins\Purple\Head.png" />
+    <Resource Include="Assets\Skins\Purple\Tail.png" />
+    <Resource Include="Assets\Skins\Purple\Turn.png" />
   </ItemGroup>
 
 </Project>

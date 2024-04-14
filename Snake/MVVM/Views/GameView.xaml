@@ -105,7 +105,7 @@
                         <ItemsPanelTemplate>
                             <UniformGrid
                                 Rows="{Binding Rows}" Columns="{Binding Columns}"
-                                Width="750" Height="750" />
+                                Width="778" Height="778" />
                         </ItemsPanelTemplate>
 
                     </ItemsControl.ItemsPanel>
